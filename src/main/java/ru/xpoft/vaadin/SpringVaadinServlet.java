@@ -29,28 +29,24 @@ public class SpringVaadinServlet extends VaadinServlet
      */
     private transient ApplicationContext applicationContext;
     /**
-     * Servlet start date
-     */
-    private transient Date servletStartDate = new Date();
-    /**
      * UI bean name
      */
     private String vaadinBeanName = "ui";
     private String systemMessagesBeanName = "";
 
     @Override
-    public void init(ServletConfig servletConfig) throws ServletException
+    public void init(ServletConfig config) throws ServletException
     {
-        applicationContext = WebApplicationContextUtils.getWebApplicationContext(servletConfig.getServletContext());
-        if (servletConfig.getInitParameter(BEAN_NAME_PARAMETER) != null)
+        applicationContext = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+        if (config.getInitParameter(BEAN_NAME_PARAMETER) != null)
         {
-            vaadinBeanName = servletConfig.getInitParameter(BEAN_NAME_PARAMETER);
+            vaadinBeanName = config.getInitParameter(BEAN_NAME_PARAMETER);
             logger.debug("found BEAN_NAME_PARAMETER: {}", vaadinBeanName);
         }
 
-        if (servletConfig.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER) != null)
+        if (config.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER) != null)
         {
-            systemMessagesBeanName = servletConfig.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER);
+            systemMessagesBeanName = config.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER);
             logger.debug("found SYSTEM_MESSAGES_BEAN_NAME_PARAMETER: {}", systemMessagesBeanName);
         }
 
@@ -59,7 +55,7 @@ public class SpringVaadinServlet extends VaadinServlet
             SpringApplicationContext.setApplicationContext(applicationContext);
         }
 
-        super.init(servletConfig);
+        super.init(config);
     }
 
     @Override

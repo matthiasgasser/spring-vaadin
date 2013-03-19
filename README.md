@@ -3,8 +3,6 @@ Spring Vaadin Integration
 
 Vaadin 7.x supports only.
 
-Current version: Vaadin 7.0.0
-
 http://vaadin.com/addon/springvaadinintegration
 
 # Servlet
@@ -188,7 +186,7 @@ pom.xml
         <dependency>
             <groupId>ru.xpoft.vaadin</groupId>
             <artifactId>spring-vaadin-integration</artifactId>
-            <version>1.6.6</version>
+            <version>1.7</version>
         </dependency>
     </dependencies>
 ~~~~
@@ -257,7 +255,7 @@ CustomSystemMessages class must implements SpringSystemMessagesProvider interfac
 
 # Apache Shiro support
 Use ShiroSecurityNavigator instead of DiscoveryNavigator.
-ShiroSecurityNavigator user @RequiresRoles and @RequiresPermissions of View class. If user doesn't have permission, View is not visible.
+ShiroSecurityNavigator uses @RequiresRoles, @RequiresPermissions, @RequiresAuthentication, @RequiresGuest, @RequiresUser of View class. If user doesn't have permission, View is not visible.
 
 See sample project
 ~~~~ java
@@ -307,7 +305,17 @@ Vaadin 7.0+ supported. Last update: Aug 28, 2012
 
 # Changelog
 
-## 1.6.5
+## 1.7
+- VaadinMessageSource. Use VaadinSession instead of UI
+- ShiroSecurityNavigator. Add @RequiresAuthentication, @RequiresGuest, @RequiresUser support.
+
+## 1.6.8
+- NPE fix in DiscoveryNavigator. Thx to mpilone.
+
+## 1.6.7
+- Add portlet support (SpringVaadinPortlet). Thx to matthiasgasser.
+
+## 1.6.6
 - Vaadin 7.0.0
 
 ## 1.6.5

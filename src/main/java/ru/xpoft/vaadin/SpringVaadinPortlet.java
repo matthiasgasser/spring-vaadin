@@ -1,71 +1,68 @@
 package ru.xpoft.vaadin;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletException;
-
+import com.vaadin.server.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.portlet.context.PortletApplicationContextUtils;
 
-import com.vaadin.server.DeploymentConfiguration;
-import com.vaadin.server.ServiceException;
-import com.vaadin.server.SessionInitEvent;
-import com.vaadin.server.SessionInitListener;
-import com.vaadin.server.VaadinPortlet;
-import com.vaadin.server.VaadinPortletService;
+import javax.portlet.PortletConfig;
+import javax.portlet.PortletException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import java.util.Date;
 
 /**
- * @author matthiasgasser
- *
+ * @author xpoft
  */
-public class SpringVaadinPortlet extends VaadinPortlet {
+public class SpringVaadinPortlet extends VaadinPortlet
+{
+    private static Logger logger = LoggerFactory.getLogger(SpringVaadinPortlet.class);
+    /**
+     * Servlet parameter name for UI bean
+     */
+    private static final String BEAN_NAME_PARAMETER = "beanName";
+    /**
+     * Servlet parameter name for UI bean
+     */
+    private static final String SYSTEM_MESSAGES_BEAN_NAME_PARAMETER = "systemMessagesBeanName";
+    /**
+     * Spring Application Context
+     */
+    private transient ApplicationContext applicationContext;
+    /**
+     * UI bean name
+     */
+    private String vaadinBeanName = "ui";
+    private String systemMessagesBeanName = "";
 
-	private static final long serialVersionUID = -6061277195597641486L;
+    @Override
+    public void init(PortletConfig config) throws PortletException
+    {
+        applicationContext = PortletApplicationContextUtils.getWebApplicationContext(config.getPortletContext());
+        if (config.getInitParameter(BEAN_NAME_PARAMETER) != null)
+        {
+            vaadinBeanName = config.getInitParameter(BEAN_NAME_PARAMETER);
+            logger.debug("found BEAN_NAME_PARAMETER: {}", vaadinBeanName);
+        }
 
-	private static Logger logger = LoggerFactory.getLogger(SpringVaadinPortlet.class);
-	/**
-	 * Servlet parameter name for UI bean
-	 */
-	private static final String BEAN_NAME_PARAMETER = "beanName";
-	/**
-	 * Servlet parameter name for UI bean
-	 */
-	private static final String SYSTEM_MESSAGES_BEAN_NAME_PARAMETER = "systemMessagesBeanName";
-	/**
-	 * Spring Application Context
-	 */
-	private transient ApplicationContext applicationContext;
-	
-	/**
-	 * UI bean name
-	 */
-	private String vaadinBeanName = "ui";
-	private String systemMessagesBeanName = "";
+        if (config.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER) != null)
+        {
+            systemMessagesBeanName = config.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER);
+            logger.debug("found SYSTEM_MESSAGES_BEAN_NAME_PARAMETER: {}", systemMessagesBeanName);
+        }
 
-	@Override
-	public void init(PortletConfig config) throws PortletException {
+        if (SpringApplicationContext.getApplicationContext() == null)
+        {
+            SpringApplicationContext.setApplicationContext(applicationContext);
+        }
 
-		 applicationContext = PortletApplicationContextUtils.getWebApplicationContext(config.getPortletContext());
-		
-		if (config.getInitParameter(BEAN_NAME_PARAMETER) != null) {
-			vaadinBeanName = config.getInitParameter(BEAN_NAME_PARAMETER);
-			logger.debug("found BEAN_NAME_PARAMETER: {}", vaadinBeanName);
-		}
+        super.init(config);
+    }
 
-		if (config.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER) != null) {
-			systemMessagesBeanName = config.getInitParameter(SYSTEM_MESSAGES_BEAN_NAME_PARAMETER);
-			logger.debug("found SYSTEM_MESSAGES_BEAN_NAME_PARAMETER: {}", systemMessagesBeanName);
-		}
-
-		if (SpringApplicationContext.getApplicationContext() == null) {
-			SpringApplicationContext.setApplicationContext(applicationContext);
-		}
-
-		super.init(config);
-	}
-	
-	protected VaadinPortletService createPortletService(DeploymentConfiguration deploymentConfiguration)
+    @Override
+    protected VaadinPortletService createPortletService(DeploymentConfiguration deploymentConfiguration)
     {
         final VaadinPortletService service = super.createPortletService(deploymentConfiguration);
 
@@ -89,6 +86,4 @@ public class SpringVaadinPortlet extends VaadinPortlet {
 
         return service;
     }
-
 }
-                                 
